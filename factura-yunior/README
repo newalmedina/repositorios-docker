@@ -1,0 +1,37 @@
+docker exec -it factura-yunior-apache bash
+
+docker exec -it factura-yunior-mysql bash
+docker exec -it factura-yunior-apache bash
+docker exec -it factura-yunior-queue-worker bash
+
+
+ mysql -u root -p    
+ 
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+
+
+si el cron no funciona dentro del bash de apache ver
+
+ error cat /var/log/cron.log
+ 
+si el error es  /bin/sh: 1: php: not found hay que ver la ruta
+con wich php 
+eto te arrojara algo como 'php /usr/local/bin/php' si es asi modificar el cron
+
+
+* * * * * root /usr/local/bin/php /var/www/html/artisan schedule:run --no-ansi >> /var/log/cron.log 2>&1
+# Don't remove the empty line at the end of this file. It is required to run the cron jobexit
+
+
+
+sudo chmod -R 777 /root/proyectos-web/www/factura-yunior/storage/logs/
+
+sudo chmod 664 /root/proyectos-web/www/factura-yunior/storage/logs/laravel.log
+
+sudo chmod -R 775 /root/proyectos-web/www/factura-yunior/storage/framework/sessions/
+
+
+git para repositorio privado despues que se ha generado la clave ssh poner esto
+git remote set-url origin git@github.com:newalmedina/factura-yunior-docker.git
+
+
