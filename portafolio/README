@@ -22,14 +22,20 @@ eto te arrojara algo como 'php /usr/local/bin/php' si es asi modificar el cron
 * * * * * root /usr/local/bin/php /var/www/html/artisan schedule:run --no-ansi >> /var/log/cron.log 2>&1
 # Don't remove the empty line at the end of this file. It is required to run the cron jobexit
 
+sudo chmod -R 777 /mnt/sda2/proyectos-web/www/portafolio
 sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/logs/
 
 sudo chmod 664 /root/proyectos-web/www/portafolio/storage/logs/laravel.log
 
-sudo chmod -R 775 /root/proyectos-web/www/portafolio/storage/framework/sessions/
+sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/framework/sessions/
 
 
 git para repositorio privado despues que se ha generado la clave ssh poner esto
 git remote set-url origin git@github.com:newalmedina/portafolio-docker.git
 
+
+
+para que las imagenes se vean poner 
+
+php artisan storage:link
 
