@@ -52,6 +52,7 @@ RUN apt-get update \
     ruby-dev \
     rubygems \
     nodejs \
+    npm \ 
     sudo \
     && docker-php-ext-install \
     pdo_mysql \
