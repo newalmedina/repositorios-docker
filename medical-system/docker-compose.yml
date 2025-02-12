@@ -3,46 +3,50 @@ version: '3.8'
 services:
   php-apache:
     container_name: ${PROYECT_NAME}-apache
-    # Otras configuraciones...
-    labels:
-      - "com.example.environment=production"
     build:
       context: .
     ports:
-      - ${APACHE_PORT}:80
-
+      - "${APACHE_PORT}:80"  # HTTP en 8082 (según .env)
+      - "443:443"            # HTTPS en 443
     volumes:
       - ${DOCUMENT_ROOT}:/var/www/html
       - ${PHP_INI}:/usr/local/etc/php/php.ini
       - ${CONFIG_FILE}:/etc/apache2/sites-enabled/000-default.conf
       - ${APACHE_LOG_DIR}:/var/log/apache2
-
+      - ./certbot/conf:/etc/letsencrypt  # Certificados SSL
+      - ./certbot/www:/var/www/certbot    # Validación de Certbot
     depends_on:
       - mysql
     networks:
       medical-net:
-        # ipv4_address: ${MY_IP}.10
 
   mysql:
     container_name: ${PROYECT_NAME}-mysql
-    labels:
-      - "com.example.environment=production"
     image: mysql:8.0
     ports:
-     - ${MYSQL_PORT}:3306
+      - "${MYSQL_PORT}:3306"  # Puerto 3307 según .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE:  ${MYSQL_DATABASE}
-      MYSQL_USER:  ${MYSQL_USER}
-      MYSQL_PASSWORD:  ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
       medical-net:
-        # ipv4_address: ${MY_IP}.11  
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - php-apache
+    command: certonly --webroot --webroot-path=/var/www/certbot --email tu-email@example.com --agree-tos --no-eff-email --staging -d newal-proyectos.ddns.net
 
 networks:
   medical-net:
-    
+
 volumes:
   mysql-data:
