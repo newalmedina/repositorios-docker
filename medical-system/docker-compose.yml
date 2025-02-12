@@ -43,7 +43,7 @@ services:
       - ./certbot/www:/var/www/certbot
     depends_on:
       - php-apache
-    command: certonly --webroot --webroot-path=/var/www/certbot --email tu-email@example.com --agree-tos --no-eff-email --staging -d newal-proyectos.ddns.net
+    command: certonly --webroot --webroot-path=/var/www/certbot --email ing.newal.medina@gmail.com --agree-tos --no-eff-email --staging -d newal-proyectos.ddns.net
 
 networks:
   medical-net:
