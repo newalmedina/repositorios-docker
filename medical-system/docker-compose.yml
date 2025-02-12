@@ -7,7 +7,7 @@ services:
       context: .
     ports:
       - "${APACHE_PORT}:80"  # HTTP en 8082 (según .env)
-      - "443:443"            # HTTPS en 443
+      - "${APACHE_PORT_SSL}:443"            # HTTPS en 443
     volumes:
       - ${DOCUMENT_ROOT}:/var/www/html
       - ${PHP_INI}:/usr/local/etc/php/php.ini
