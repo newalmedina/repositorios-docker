@@ -6,11 +6,12 @@ services:
     container_name: nginx-proxy-manager
     ports:
       - "81:81"        # Panel de administración de Nginx Proxy Manager (puerto 81)
-      - "8084:443"     # Redirige tráfico HTTPS a tu aplicación (puerto 443 dentro del contenedor)
+      - "8882:443"     # Mapea el puerto 8882 para manejar HTTPS (443 dentro del contenedor)
     environment:
       - DB_SQLITE_FILE=/data/database.sqlite  # Usamos SQLite como base de datos
     volumes:
-      - ./data:/data           # Volumen para persistencia de datos
+      - ./data:/data                # Volumen para persistencia de datos
+      - ./letsencrypt:/etc/letsencrypt  # Volumen para certificados SSL de Let's Encrypt
     networks:
       - nginx-net
     restart: unless-stopped
