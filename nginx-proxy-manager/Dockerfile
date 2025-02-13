@@ -4,6 +4,9 @@ FROM jc21/nginx-proxy-manager:latest
 # Crea los directorios necesarios dentro del contenedor
 RUN mkdir -p /data /etc/letsencrypt
 
+# Asigna permisos adecuados a los directorios creados
+RUN chown -R nginx:nginx /data /etc/letsencrypt
+
 # Establece el directorio de trabajo
 WORKDIR /app
 
