@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:latest
+    build: .
     container_name: nginx-proxy-manager
     ports:
       - "81:81"        # Panel de administración de Nginx Proxy Manager (puerto 81)
