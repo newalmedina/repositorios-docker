@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    ports:
+      - "81:81"        # Panel de administración de Nginx Proxy Manager (puerto 81)
+      - "8082:8082"    # Redirige tráfico HTTP a puerto 8082
+      - "8083:8083"    # Redirige tráfico HTTP a puerto 8083
+    environment:
+      - DB_SQLITE_FILE=/data/database.sqlite  # Usamos SQLite como base de datos
+    volumes:
+      - ./data:/data           # Volumen para persistencia de datos
+    networks:
+      - nginx-net
+    restart: unless-stopped
+
+networks:
+  nginx-net:
+    driver: bridge
