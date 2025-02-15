@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mysql:
-    container_name: ${PROYECT_NAME}-mysql
+    container_name: mysql-8
     image: mysql:8.0
     ports:
       - "${MYSQL_PORT}:3306"
@@ -14,11 +14,11 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - medical-net
+      - portafolio-net
 
 volumes:
   mysql-data:
 
 networks:
-  medical-net:
+  portafolio-net:
     external: true
