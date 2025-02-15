@@ -1,22 +1,18 @@
 services:
-  mysql:
-    container_name: ${PROYECT_NAME}-mysql
-    image: mysql:8.0
+  php-apache:
+    container_name: ${PROYECT_NAME}-apache
+    build:
+      context: .
     ports:
-      - "${MYSQL_PORT}:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      - "${APACHE_PORT}:80"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - "${DOCUMENT_ROOT}:/var/www/html"
+      - "${PHP_INI}:/usr/local/etc/php/php.ini"
+      - "${CONFIG_FILE}:/etc/apache2/sites-enabled/000-default.conf"
+      - "${APACHE_LOG_DIR}:/var/log/apache2"
     networks:
-      - medical-net
-
-volumes:
-  mysql-data:
+      - web  # Cambiado de 'portafolio-net' a 'web'
 
 networks:
-  medical-net:
-    external: true
+  web:
+    external: true  # Usamos la red externa 'web'

@@ -12,11 +12,11 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - portafolio-net
+      - web  # Cambiado de 'portafolio-net' a 'web'
 
 volumes:
   mysql-data:
 
 networks:
-  portafolio-net:
-    external: true
+  web:
+    external: true  # Usamos la red externa 'web'

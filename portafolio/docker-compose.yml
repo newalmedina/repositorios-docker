@@ -10,11 +10,9 @@ services:
       - "${PHP_INI}:/usr/local/etc/php/php.ini"
       - "${CONFIG_FILE}:/etc/apache2/sites-enabled/000-default.conf"
       - "${APACHE_LOG_DIR}:/var/log/apache2"
-    depends_on:
-      - mysql
     networks:
-      - portafolio-net
+      - web  # Cambiado de 'portafolio-net' a 'web'
 
 networks:
-  portafolio-net:
-    external: true
+  web:
+    external: true  # Usamos la red externa 'web'
