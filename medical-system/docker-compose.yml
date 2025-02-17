@@ -12,8 +12,7 @@ services:
       - "${APACHE_LOG_DIR}:/var/log/apache2"
     networks:
       - web  # Cambiado de 'portafolio-net' a 'web'
-
+    restart: always
 networks:
   web:
     external: true  # Usamos la red externa 'web'
-restart: always
