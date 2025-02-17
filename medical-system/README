@@ -29,6 +29,13 @@ sudo chmod 664 /root/proyectos-web/www/medical-system/storage/logs/laravel.log
 sudo chmod -R 775 /root/proyectos-web/www/medical-system/storage/framework/sessions/
 
 
+IONOS
+
+sudo chmod -R 777 /root/proyectos-web/www/medical-system
+sudo chmod -R 777 /root/proyectos-web/www/medical-system/storage/logs/
+sudo chmod 664 /root/proyectos-web/www/medical-system/storage/logs/laravel.log
+sudo chmod -R 777 /root/proyectos-web/www/medical-system/storage/framework/sessions/
+
 git para repositorio privado despues que se ha generado la clave ssh poner esto
 git remote set-url origin git@github.com:newalmedina/medical-system-docker.git
 

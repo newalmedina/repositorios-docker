@@ -16,3 +16,4 @@ services:
 networks:
   web:
     external: true  # Usamos la red externa 'web'
+restart: always

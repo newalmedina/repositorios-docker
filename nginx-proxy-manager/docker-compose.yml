@@ -14,7 +14,7 @@ services:
       - ./letsencrypt:/etc/letsencrypt  # Volumen para certificados SSL de Let's Encrypt
     networks:
       - nginx-net
-    restart: unless-stopped
+    restart: always
 
 networks:
   nginx-net:

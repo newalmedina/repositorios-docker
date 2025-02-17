@@ -1,6 +1,5 @@
 docker exec -it portafolio-apache bash
 
-docker exec -it portafolio-mysql bash
 docker exec -it portafolio-apache bash
 docker exec -it portafolio-queue-worker bash
 
@@ -29,6 +28,17 @@ sudo chmod 664 /root/proyectos-web/www/portafolio/storage/logs/laravel.log
 
 sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/framework/sessions/
 
+IONOS
+
+sudo chmod -R 777 /root/proyectos-web/www/portafolio
+sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/logs/
+sudo chmod 664 /root/proyectos-web/www/portafolio/storage/logs/laravel.log
+sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/framework/sessions/
+
+sudo chmod -R 777 /var/www/html
+sudo chmod -R 777 /var/www/html/storage/logs/
+sudo chmod 664 /var/www/html/storage/logs/laravel.log
+sudo chmod -R 777 /var/www/html/storage/framework/sessions/
 
 git para repositorio privado despues que se ha generado la clave ssh poner esto
 git remote set-url origin git@github.com:newalmedina/portafolio-docker.git

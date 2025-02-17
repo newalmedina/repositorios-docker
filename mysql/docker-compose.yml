@@ -13,7 +13,8 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - web  # Cambiado de 'portafolio-net' a 'web'
-
+    restart: always
+    
 volumes:
   mysql-data:
 
