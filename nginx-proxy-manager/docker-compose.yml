@@ -12,10 +12,11 @@ services:
       - ./letsencrypt:/etc/letsencrypt  # Volumen para certificados SSL de Let's Encrypt
     networks:
       - nginx-net
-      - web
-    # restart: unless-stopped
+      - web        # Conectamos Nginx Proxy Manager a la red 'web'
     restart: always
 
 networks:
   nginx-net:
     driver: bridge
+  web:
+    external: true   # Asegúrate de que la red 'web' ya esté creada y sea externa
