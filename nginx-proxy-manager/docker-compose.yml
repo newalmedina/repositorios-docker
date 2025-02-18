@@ -4,7 +4,8 @@ services:
     container_name: nginx-proxy-manager
     ports:
       - "81:81"        # Panel de administración de Nginx Proxy Manager (puerto 81)
-      - "4443:443"     # Mapea el puerto 8882 para manejar HTTPS (443 dentro del contenedor)
+      - "80:80"        # Panel nginx
+      - "443:443"     # Mapea el puerto 8882 para manejar HTTPS (443 dentro del contenedor)
     environment:
       - DB_SQLITE_FILE=/data/database.sqlite  # Usamos SQLite como base de datos
     volumes:
