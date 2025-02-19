@@ -21,10 +21,14 @@ eto te arrojara algo como 'php /usr/local/bin/php' si es asi modificar el cron
 * * * * * root /usr/local/bin/php /var/www/html/artisan schedule:run --no-ansi >> /var/log/cron.log 2>&1
 # Don't remove the empty line at the end of this file. It is required to run the cron jobexit
 
+chmod -R 777 public/assets/
+chown -R www-data:www-data public/assets/
+
+
 sudo chmod -R 777 /mnt/sda2/proyectos-web/www/portafolio
 sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/logs/
 
-sudo chmod 664 /root/proyectos-web/www/portafolio/storage/logs/laravel.log
+sudo chmod 777 /root/proyectos-web/www/portafolio/storage/logs/laravel.log
 
 sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/framework/sessions/
 
@@ -32,12 +36,12 @@ IONOS
 
 sudo chmod -R 777 /root/proyectos-web/www/portafolio
 sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/logs/
-sudo chmod 664 /root/proyectos-web/www/portafolio/storage/logs/laravel.log
 sudo chmod -R 777 /root/proyectos-web/www/portafolio/storage/framework/sessions/
+sudo chmod 664 /root/proyectos-web/www/portafolio/storage/logs/laravel.log
 
 sudo chmod -R 777 /var/www/html
 sudo chmod -R 777 /var/www/html/storage/logs/
-sudo chmod 664 /var/www/html/storage/logs/laravel.log
+sudo chmod 777 /var/www/html/storage/logs/laravel.log
 sudo chmod -R 777 /var/www/html/storage/framework/sessions/
 
 git para repositorio privado despues que se ha generado la clave ssh poner esto

@@ -30,6 +30,8 @@ sudo chmod -R 775 /root/proyectos-web/www/medical-system/storage/framework/sessi
 
 
 IONOS
+chmod -R 777 public/assets/
+chown -R www-data:www-data public/assets/
 
 sudo chmod -R 777 /root/proyectos-web/www/medical-system
 sudo chmod -R 777 /root/proyectos-web/www/medical-system/storage/logs/

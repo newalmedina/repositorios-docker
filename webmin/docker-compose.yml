@@ -1,0 +1,15 @@
+services:
+  webmin:
+    image: webmin/webmin:latest
+    container_name: webmin
+    ports:
+      - "10000:10000"  # Puerto para acceder al panel de administración de Webmin
+    volumes:
+      - ./webmin-data:/config  # Volumen para persistencia de configuración
+    networks:
+      - web  # Conectar con la red web que ya está configurada
+    restart: always
+
+networks:
+  web:
+    external: true  # Asegúrate de que la red 'web' ya esté creada y sea externa
