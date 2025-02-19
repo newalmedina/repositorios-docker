@@ -1,6 +1,6 @@
 services:
   webmin:
-    image: linuxserver/webmin:latest
+    image: hsliu/webmin
     container_name: webmin
     ports:
       - "10000:10000"  # Puerto para acceder al panel de administración de Webmin
