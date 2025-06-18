@@ -51,8 +51,8 @@ RUN apt-get update \
     libldap2-dev \
     ruby-dev \
     rubygems \
-    nodejs \
-    npm \ 
+    # nodejs \
+    # npm \ 
     sudo \
     && docker-php-ext-install \
     pdo_mysql \
@@ -72,7 +72,10 @@ RUN apt-get update \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap
 
-
+# Node.js 20.x setup (usa el script oficial)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+    
 # Install supervisord
 RUN apt-get update && apt-get upgrade -y && apt-get install -y supervisor
 # Make supervisor log directory
