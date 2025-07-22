@@ -22,6 +22,7 @@ RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
 RUN apt-get update \
     && apt-get install -y \
     libfreetype6-dev \
+    default-mysql-client \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
     libbz2-dev \
