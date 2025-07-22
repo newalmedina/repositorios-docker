@@ -20,6 +20,7 @@ RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
 RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
 
 RUN apt-get update \
+    default-mysql-client \
     && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
