@@ -1,0 +1,3 @@
+2025/07/09 06:51:26 [warn] 198#198: *6343 using uninitialized "server" variable while logging request, client: 123.160.223.72, server: portafolio.el-solitions.es, request: "GET / HTTP/1.1", host: "portafolio.el-solitions.es:443"
+2025/07/09 10:15:24 [error] 198#198: *9473 portafolio-apache could not be resolved (2: Server failure), client: 213.111.144.244, server: portafolio.el-solitions.es, request: "GET / HTTP/1.1", host: "portafolio.el-solitions.es"
+2025/07/09 13:12:40 [error] 206#206: *12610 portafolio-apache could not be resolved (2: Server failure), client: 123.160.223.74, server: portafolio.el-solitions.es, request: "GET / HTTP/1.1", host: "portafolio.el-solitions.es", referrer: "http://portafolio.el-solitions.es"
