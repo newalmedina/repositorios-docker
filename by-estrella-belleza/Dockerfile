@@ -18,11 +18,8 @@ RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
 
 # Time Zone
 RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
-# Configurar la zona horaria del sistema (SOLO DENTRO DEL CONTENEDOR)
-RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
- && echo "Europe/Madrid" > /etc/timezone
+
 RUN apt-get update \
-    default-mysql-client \
     && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
