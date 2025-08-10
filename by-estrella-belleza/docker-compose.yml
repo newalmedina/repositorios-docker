@@ -13,6 +13,12 @@ services:
     networks:
       - web  # Cambiado de 'portafolio-net' a 'web'
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 networks:
   web:
     external: true  # Usamos la red externa 'web'
