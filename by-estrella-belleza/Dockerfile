@@ -1,7 +1,6 @@
-# Dockerfile Apache+PHP compatible Debian Trixie
 FROM php:8.2-apache
 
-MAINTAINER Newal Medina
+LABEL maintainer="Newal Medina"
 
 # ----------------------------
 # Apache mod_rewrite
@@ -11,11 +10,11 @@ RUN a2enmod rewrite
 # ----------------------------
 # PHP Configuration
 # ----------------------------
-RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
-RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
+RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini \
+    && echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
 
 # ----------------------------
-# Install system dependencies
+# System dependencies
 # ----------------------------
 RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
@@ -42,7 +41,6 @@ RUN apt-get update && apt-get install -y \
     wget \
     zsh \
     libicu-dev \
-    uw-imap-dev \
     libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
@@ -51,7 +49,20 @@ RUN apt-get update && apt-get install -y \
     sudo \
     cron \
     supervisor \
+    build-essential \
+    libc6-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# ----------------------------
+# Compile c-client for IMAP
+# ----------------------------
+RUN curl -L -o c-client.tar.gz https://www.washington.edu/imap/ftp/c-client.tar.gz \
+    && tar -xzf c-client.tar.gz \
+    && cd c-client-* \
+    && make os=linux \
+    && cp c-client.a /usr/lib/ \
+    && cp c-client.h /usr/include/ \
+    && cd .. && rm -rf c-client* 
 
 # ----------------------------
 # PHP Extensions
@@ -60,7 +71,7 @@ RUN docker-php-ext-install pdo_mysql mysqli zip bz2 bcmath tidy intl soap pcntl 
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-enable tidy \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl --with-imap-include=/usr/include/imap-2007f \
+    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl --with-imap-include=/usr/include/ \
     && docker-php-ext-install imap \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap
