@@ -24,7 +24,7 @@ RUN apt-get update \
     libfreetype6-dev \
     default-mysql-client \
     libjpeg62-turbo-dev \
-    libmcrypt-dev \
+    # libmcrypt-dev \
     libbz2-dev \
     libzip-dev \
     libxrender1 \
