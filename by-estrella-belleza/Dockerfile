@@ -66,8 +66,8 @@ RUN apt-get update \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-enable tidy \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-install imap \
+    # && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+    # && docker-php-ext-install imap \
     && docker-php-ext-install soap \
     && docker-php-ext-install pcntl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
