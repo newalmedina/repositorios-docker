@@ -47,11 +47,11 @@ RUN apt-get update \
     zsh \
     libicu-dev \
     # libc-client-dev \
-    libc-client2007e-dev
+    libc-client2007e-dev \
     libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
-    ruby-dev \
+    ruby-dev
     rubygems \
     # nodejs \
     # npm \ 
