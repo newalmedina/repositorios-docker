@@ -46,7 +46,7 @@ RUN apt-get update \
     wget \
     zsh \
     libicu-dev \
-    # libc-client-dev \
+    libc-client-dev \
     libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
@@ -66,8 +66,8 @@ RUN apt-get update \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-enable tidy \
-    # && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    # && docker-php-ext-install imap \
+    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+    && docker-php-ext-install imap \
     && docker-php-ext-install soap \
     && docker-php-ext-install pcntl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
@@ -91,8 +91,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
     rm composer-setup.php
 
-# Desactivar SSL para mysqldump
-ENV DB_DUMP_EXTRA_ARGUMENTS="--ssl-mode=DISABLED"
+
 # Instalación de cron
 RUN apt-get update && apt-get install -y cron
 
@@ -114,3 +113,6 @@ RUN touch /var/log/cron.log
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 CMD ["/usr/local/bin/start.sh"]
+
+HEALTHCHECK --interval=1m --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost/ || exit 1

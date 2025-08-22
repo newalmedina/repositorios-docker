@@ -15,11 +15,10 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
-      interval: 3m          # Chequea cada 3 minutos (en vez de 1)
-      timeout: 5s           # Espera máximo 5 segundos por respuesta
-      retries: 3            # Marca como unhealthy tras 3 fallos consecutivos
-      start_period: 1m      # Da 1 minuto para que el contenedor termine de iniciar
-
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 networks:
   web:
     external: true  # Usamos la red externa 'web'
