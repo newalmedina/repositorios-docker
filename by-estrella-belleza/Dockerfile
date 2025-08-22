@@ -18,9 +18,7 @@ RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
 
 # Time Zone
 RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
-
-RUN apt-get update \
-    && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     default-mysql-client \
     libjpeg62-turbo-dev \
@@ -46,28 +44,25 @@ RUN apt-get update \
     wget \
     zsh \
     libicu-dev \
-    # libc-client-dev \
     libc-client2007e-dev \
     libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
-    ruby-dev
-    rubygems \
-    # nodejs \
-    # npm \ 
+    ruby-dev \
+    rubygems-integration \
     sudo \
     && docker-php-ext-install \
-    pdo_mysql \
-    mysqli \
-    zip \
-    bz2 \
-    bcmath \
-    tidy \
-    intl \
+        pdo_mysql \
+        mysqli \
+        zip \
+        bz2 \
+        bcmath \
+        tidy \
+        intl \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-enable tidy \
-   && docker-php-ext-configure imap --with-kerberos --with-imap-ssl=/usr/include/c-client \
+    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl=/usr/include/c-client \
     && docker-php-ext-install imap \
     && docker-php-ext-install soap \
     && docker-php-ext-install pcntl \
