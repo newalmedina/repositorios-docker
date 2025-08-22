@@ -91,7 +91,8 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
     rm composer-setup.php
 
-
+# Desactivar SSL para mysqldump
+ENV DB_DUMP_EXTRA_ARGUMENTS="--ssl-mode=DISABLED"
 # Instalación de cron
 RUN apt-get update && apt-get install -y cron
 
