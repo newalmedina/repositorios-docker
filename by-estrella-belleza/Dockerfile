@@ -46,7 +46,7 @@ RUN apt-get update \
     wget \
     zsh \
     libicu-dev \
-    libc-client-dev \
+    # libc-client-dev \
     libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
