@@ -46,7 +46,8 @@ RUN apt-get update \
     wget \
     zsh \
     libicu-dev \
-    libc-client-dev \
+    # libc-client-dev \
+    libc-client2007e-dev
     libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
@@ -66,7 +67,7 @@ RUN apt-get update \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-enable tidy \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+   && docker-php-ext-configure imap --with-kerberos --with-imap-ssl=/usr/include/c-client \
     && docker-php-ext-install imap \
     && docker-php-ext-install soap \
     && docker-php-ext-install pcntl \
