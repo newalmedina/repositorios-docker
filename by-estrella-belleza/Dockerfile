@@ -18,12 +18,11 @@ RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
 
 # Time Zone
 RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
-# Configurar la zona horaria del sistema (SOLO DENTRO DEL CONTENEDOR)
-RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
- && echo "Europe/Madrid" > /etc/timezone
+
 RUN apt-get update \
     && apt-get install -y \
     libfreetype6-dev \
+    default-mysql-client \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
     libbz2-dev \
@@ -48,7 +47,7 @@ RUN apt-get update \
     zsh \
     libicu-dev \
     libc-client-dev \
-    libkrb5-dev \
+    # libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
     ruby-dev \
@@ -67,8 +66,8 @@ RUN apt-get update \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-enable tidy \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-install imap \
+    # && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+    # && docker-php-ext-install imap \
     && docker-php-ext-install soap \
     && docker-php-ext-install pcntl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
