@@ -18,11 +18,12 @@ RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
 
 # Time Zone
 RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
-
+# Configurar la zona horaria del sistema (SOLO DENTRO DEL CONTENEDOR)
+RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
+ && echo "Europe/Madrid" > /etc/timezone
 RUN apt-get update \
     && apt-get install -y \
     libfreetype6-dev \
-    default-mysql-client \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
     libbz2-dev \
@@ -113,6 +114,3 @@ RUN touch /var/log/cron.log
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 CMD ["/usr/local/bin/start.sh"]
-
-HEALTHCHECK --interval=1m --timeout=10s --start-period=30s --retries=3 \
-  CMD curl -f http://localhost/ || exit 1
