@@ -46,8 +46,8 @@ RUN apt-get update \
     wget \
     zsh \
     libicu-dev \
-    libc-client-dev \
-    # libkrb5-dev \
+    # libc-client-dev \
+    libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
     ruby-dev \
