@@ -73,6 +73,11 @@ RUN apt-get update \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap
 
+    # Configurar zona horaria del sistema a Madrid
+RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
+&& echo "Europe/Madrid" > /etc/timezone \
+&& dpkg-reconfigure -f noninteractive tzdata
+
 # Node.js 20.x setup (usa el script oficial)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs
