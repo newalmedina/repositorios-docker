@@ -1,5 +1,0 @@
-[client]
-ssl=0
-
-[mysqldump]
-ssl=0
