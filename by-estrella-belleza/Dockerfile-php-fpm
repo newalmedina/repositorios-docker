@@ -73,7 +73,9 @@ WORKDIR /var/www/html
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && rm composer-setup.php
-
+# Instalar supervisord
+RUN apt-get update && apt-get install -y supervisor \
+    && mkdir -p /var/log/supervisor
 # Copiar script de arranque
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
