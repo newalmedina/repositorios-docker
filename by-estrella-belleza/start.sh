@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-# Iniciar PHP-FPM
-service php8.2-fpm start
+# PHP-FPM ya se lanza como proceso propio
+# Si quieres correrlo con supervisord, no necesitas esta línea
 
-# Iniciar Nginx
-service nginx start
-
-# Iniciar supervisord en foreground (maneja cron, queue workers, etc.)
+# Iniciar supervisord (cron, queue workers, etc.) en foreground
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n
+
+# Mantener el contenedor vivo
+# tail -f /var/log/supervisor/*.log
