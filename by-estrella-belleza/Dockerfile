@@ -73,18 +73,6 @@ RUN apt-get update \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap
 
-    # Instalar OPcache
-RUN docker-php-ext-install opcache
-
-# Configurar OPcache
-RUN echo "opcache.enable=1" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.enable_cli=1" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.memory_consumption=256" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.interned_strings_buffer=16" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.max_accelerated_files=10000" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.revalidate_freq=0" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.validate_timestamps=0" >> $PHP_INI_DIR/conf.d/opcache.ini
-
     # Configurar zona horaria del sistema a Madrid
 RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
 && echo "Europe/Madrid" > /etc/timezone \
@@ -106,9 +94,7 @@ RUN chown -R www-data:www-data /var/www
 # Installation of Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
-    rm composer-setup.
-    
-
+    rm composer-setup.php
 
 
 # Instalación de cron
