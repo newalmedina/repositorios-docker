@@ -1,9 +1,11 @@
 #!/bin/bash
+set -e
 
-# Iniciar el servicio cron al iniciar el contenedor
-cron -f &
+# Iniciar PHP-FPM
+service php8.2-fpm start
 
-# Iniciar supervisord
-/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+# Iniciar Nginx
+service nginx start
 
-RUN chmod -R 777 /root/proyectos-web/www
+# Iniciar supervisord en foreground (maneja cron, queue workers, etc.)
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n

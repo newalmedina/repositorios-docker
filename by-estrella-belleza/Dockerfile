@@ -1,32 +1,16 @@
-# Dockerfile Apache+PHP
-FROM php:8.2-apache
+# Dockerfile PHP-FPM + Nginx para Laravel Livewire
 
+FROM php:8.2-fpm
 
 MAINTAINER Newal Medina
 
-# |--------------------------------------------------------------------------
-# | Apache mod_rewrite
-# |--------------------------------------------------------------------------
-# |
-# | Enables Apache mod_rewrite.
-# |
-RUN a2enmod rewrite
-
-# Memory Limit
-#RUN echo "memory_limit=800M" > $PHP_INI_DIR/conf.d/memory-limit.ini
-RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
-
-# Time Zone
-RUN echo "date.timezone=Europe/Madrid" > $PHP_INI_DIR/conf.d/date_timezone.ini
-
-RUN apt-get update \
-    && apt-get install -y \
+# Configuración básica de PHP
+RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
-    default-mysql-client \
     libjpeg62-turbo-dev \
-    # libmcrypt-dev \
-    libbz2-dev \
+    libpng-dev \
     libzip-dev \
+    libbz2-dev \
     libxrender1 \
     libfontconfig \
     curl \
@@ -41,96 +25,74 @@ RUN apt-get update \
     apt-utils \
     gnupg2 \
     libtidy-dev \
-    openssl \
-    libssl-dev \
-    wget \
-    zsh \
     libicu-dev \
-    # libc-client-dev \
     libkrb5-dev \
     libxml2-dev \
     libldap2-dev \
     ruby-dev \
     rubygems \
-    # nodejs \
-    # npm \ 
     sudo \
-    && docker-php-ext-install \
-    pdo_mysql \
-    mysqli \
-    zip \
-    bz2 \
-    bcmath \
-    tidy \
-    intl \
+    supervisor \
+    cron \
+    nodejs \
+    npm \
+    && docker-php-ext-install pdo_mysql mysqli zip bz2 bcmath tidy intl soap pcntl \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
     && docker-php-ext-install gd \
-    && docker-php-ext-enable tidy \
-    # && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    # && docker-php-ext-install imap \
-    && docker-php-ext-install soap \
-    && docker-php-ext-install pcntl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap
 
-
-# Configurar OPcache
-RUN echo "opcache.enable=1" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.enable_cli=1" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.memory_consumption=256" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.interned_strings_buffer=16" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.max_accelerated_files=10000" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.revalidate_freq=0" >> $PHP_INI_DIR/conf.d/opcache.ini \
-    && echo "opcache.validate_timestamps=0" >> $PHP_INI_DIR/conf.d/opcache.ini
-    # Configurar zona horaria del sistema a Madrid
+# Configurar zona horaria
 RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
-&& echo "Europe/Madrid" > /etc/timezone \
-&& dpkg-reconfigure -f noninteractive tzdata
+    && echo "Europe/Madrid" > /etc/timezone \
+    && dpkg-reconfigure -f noninteractive tzdata
 
-# Node.js 20.x setup (usa el script oficial)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs
-    
-# Install supervisord
-RUN apt-get update && apt-get upgrade -y && apt-get install -y supervisor
-# Make supervisor log directory
+# Configuración PHP
+RUN echo "memory_limit=-1" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "post_max_size=8G" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "upload_max_filesize=8G" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "date.timezone=Europe/Madrid" >> /usr/local/etc/php/conf.d/custom.ini
+
+# Instalar y configurar OPcache
+RUN docker-php-ext-install opcache
+RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini
+
+# Instalación de Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Crear directorio de logs para supervisord
 RUN mkdir -p /var/log/supervisor
-COPY --chown=root:root supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-RUN chown -R www-data:www-data /var/www
+# Crear directorio de trabajo y dar permisos
+WORKDIR /var/www/html
+RUN chown -R www-data:www-data /var/www/html
 
-
-# Installation of Composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
-    rm composer-setup.php
-
-
-# Instalación de cron
-RUN apt-get update && apt-get install -y cron
-
-# Add crontab file in the cron directory
+# Copiar crontab
 ADD crontab /etc/cron.d/laravel-cron
+RUN chmod 0644 /etc/cron.d/laravel-cron \
+    && touch /var/log/cron.log
 
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/laravel-cron
-
-# Create the log file to be able to run tail
-RUN touch /var/log/cron.log
-
-# # Iniciar el servicio cron al iniciar el contenedor
-# CMD ["cron", "-f"]
-
-# # Start supervisord
-# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-
+# Copiar script de inicio
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
+
+# Nginx
+RUN apt-get install -y nginx
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+# Exponer puerto HTTP
+EXPOSE 80
+
+# Comando de inicio
 CMD ["/usr/local/bin/start.sh"]
 
-# Disable SSL for MySQL client and mysqldump
-RUN mkdir -p /etc/mysql/conf.d
-COPY disable-ssl.cnf /etc/mysql/conf.d/disable-ssl.cnf
-
+# Healthcheck
 HEALTHCHECK --interval=1m --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost/ || exit 1

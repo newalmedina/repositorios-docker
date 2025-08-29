@@ -1,20 +1,17 @@
-version: "3.9"
-
 services:
-  app:
-    container_name: ${PROYECT_NAME}-app
+  php-apache:
+    container_name: ${PROYECT_NAME}-apache
     build:
       context: .
-      dockerfile: Dockerfile-php-fpm
     ports:
-      - "${APACHE_PORT}:80"   # Nginx escuchará aquí
+      - "${APACHE_PORT}:80"
     volumes:
       - "${DOCUMENT_ROOT}:/var/www/html"
       - "${PHP_INI}:/usr/local/etc/php/php.ini"
-      - "./default.conf:/etc/nginx/conf.d/default.conf"
-      - "${APACHE_LOG_DIR}:/var/log/nginx"
+      - "${CONFIG_FILE}:/etc/apache2/sites-enabled/000-default.conf"
+      - "${APACHE_LOG_DIR}:/var/log/apache2"
     networks:
-      - web
+      - web  # Cambiado de 'portafolio-net' a 'web'
     restart: always
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/"]
@@ -22,7 +19,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-
 networks:
   web:
-    external: true
+    external: true  # Usamos la red externa 'web'
