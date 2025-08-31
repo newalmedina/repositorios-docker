@@ -121,6 +121,9 @@ COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 CMD ["/usr/local/bin/start.sh"]
 COPY . /var/www/html
+COPY --chown=root:root supervisord.conf /etc
+ADD crontab /etc/cron.d/laravel-cron
+COPY start.sh /usr/local/bin/start.sh
 
 HEALTHCHECK --interval=1m --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost/ || exit 1
