@@ -120,7 +120,7 @@ RUN touch /var/log/cron.log
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 CMD ["/usr/local/bin/start.sh"]
-COPY ../../www/by-estrella-belleza /var/www/html
+COPY ./www/by-estrella-belleza /var/www/html
 
 HEALTHCHECK --interval=1m --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost/ || exit 1
