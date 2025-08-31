@@ -43,3 +43,21 @@ git para repositorio privado despues que se ha generado la clave ssh poner esto
 git remote set-url origin git@github.com:newalmedina/by-estrella-belleza-docker.git
 
 
+
+
+
+Pero si quieres probar rápido dentro del contenedor, puedes crear el archivo directamente con nano o echo:
+
+mkdir -p /usr/local/etc/php/conf.d
+nano /usr/local/etc/php/conf.d/docker-php-opcache.ini
+
+
+Y pegar:
+
+opcache.enable=1
+opcache.enable_cli=1
+opcache.memory_consumption=256
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=10000
+opcache.revalidate_freq=0
+opcache.validate_timestamps=0

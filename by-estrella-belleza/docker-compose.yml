@@ -6,7 +6,6 @@ services:
     ports:
       - "${APACHE_PORT}:80"
     volumes:
-      - "${DOCUMENT_ROOT}:/var/www/html"
       - "${PHP_INI}:/usr/local/etc/php/php.ini"
       - "${CONFIG_FILE}:/etc/apache2/sites-enabled/000-default.conf"
       - "${APACHE_LOG_DIR}:/var/log/apache2"
