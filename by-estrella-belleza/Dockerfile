@@ -71,7 +71,7 @@ RUN apt-get update \
     && docker-php-ext-install soap \
     && docker-php-ext-install pcntl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-    && docker-php-ext-install ldap
+    && docker-php-ext-install ldap \
     && docker-php-ext-enable opcache
 
 
