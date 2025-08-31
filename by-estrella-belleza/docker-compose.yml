@@ -2,7 +2,7 @@ services:
   php-apache:
     container_name: ${PROYECT_NAME}-apache
     build:
-      context: .
+      context: ./www/by-estrella-belleza
     ports:
       - "${APACHE_PORT}:80"
     volumes:
