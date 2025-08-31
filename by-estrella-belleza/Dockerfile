@@ -72,11 +72,8 @@ RUN apt-get update \
     && docker-php-ext-install pcntl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-install ldap
+    && docker-php-ext-enable opcache
 
-    # Configurar zona horaria del sistema a Madrid
-RUN ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
-&& echo "Europe/Madrid" > /etc/timezone \
-&& dpkg-reconfigure -f noninteractive tzdata
 
 # Node.js 20.x setup (usa el script oficial)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
@@ -118,10 +115,6 @@ RUN touch /var/log/cron.log
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 CMD ["/usr/local/bin/start.sh"]
-
-# Disable SSL for MySQL client and mysqldump
-RUN mkdir -p /etc/mysql/conf.d
-COPY disable-ssl.cnf /etc/mysql/conf.d/disable-ssl.cnf
 
 HEALTHCHECK --interval=1m --timeout=10s --start-period=30s --retries=3 \
   CMD curl -f http://localhost/ || exit 1
