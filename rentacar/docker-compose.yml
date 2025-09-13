@@ -1,0 +1,24 @@
+services:
+  php-apache:
+    container_name: ${PROYECT_NAME}-apache
+    build:
+      context: .
+    ports:
+      - "${APACHE_PORT}:80"
+    volumes:
+      - "${DOCUMENT_ROOT}:/var/www/html"
+      - "${PHP_INI}:/usr/local/etc/php/php.ini"
+      - "${CONFIG_FILE}:/etc/apache2/sites-enabled/000-default.conf"
+      - "${APACHE_LOG_DIR}:/var/log/apache2"
+    networks:
+      - web  # Cambiado de 'portafolio-net' a 'web'
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+networks:
+  web:
+    external: true  # Usamos la red externa 'web'
