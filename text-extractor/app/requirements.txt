@@ -1,5 +1,4 @@
 fastapi
 uvicorn[standard]
-pydantic
-transformers
-torch
+openai
+python-dotenv

@@ -1,7 +1,9 @@
 services:
   text-extractor:
-    build: ./       # <- apunta al directorio donde está el Dockerfile
+    build: ./app
     container_name: text-extractor
     ports:
       - "8000:8000"
     restart: unless-stopped
+    env_file:
+      - .env
