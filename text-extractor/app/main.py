@@ -15,28 +15,27 @@ class TextRequest(BaseModel):
 def extract_info(request: TextRequest):
     text = request.text
 
-    prompt = f"""
-    Analiza el siguiente mensaje relacionado con alquiler de coches.
-    Detecta el tipo de mensaje (Confirmación, Comienzo, Devolución, Cancelación) y extrae los campos relevantes.
+    prompt = (
+        "Analiza el siguiente mensaje relacionado con alquiler de coches.\n"
+        "Detecta el tipo de mensaje (Confirmación, Comienzo, Devolución, Cancelación) y extrae los campos relevantes.\n\n"
+        "Reglas:\n"
+        "- Confirmación: fecha_inicio, fecha_fin, ingresos, id_reserva, matricula_coche\n"
+        "- Comienzo del alquiler: km_entrega, combustible_entrega, arrendatario (nombre, telefono, email, carnet_conducir), matricula_coche\n"
+        "- Devolución del vehículo: fecha_hora_entrega, km_recorridos, combustible_entrega, combustible_devolucion, coste_extra, matricula_coche\n"
+        "- Cancelación: id_reserva, matricula_coche\n\n"
+        "Devuelve únicamente un JSON válido con los campos solicitados según el tipo de mensaje.\n"
+        "No agregues texto adicional.\n\n"
+        f"Texto:\n{text}\n"
+        "JSON:"
+    )
 
-    Reglas:
-    - Confirmación: fecha_inicio, fecha_fin, ingresos, id_reserva, matricula_coche
-    - Comienzo del alquiler: km_entrega, combustible_entrega, arrendatario (nombre, telefono, email, carnet_conducir), matricula_coche
-    - Devolución del vehículo: fecha_hora_entrega, km_recorridos, combustible_entrega, combustible_devolucion, coste_extra, matricula_coche (true/false)
-    - Cancelación: id_reserva, matricula_coche
-
-    Devuelve únicamente un JSON válido con los campos solicitados según el tipo de mensaje.
-    No agregues texto adicional.
-
-    Texto: {text}
-    """
-
-    result_text = extractor(prompt, max_length=512)[0]['generated_text']
+    # Generamos respuesta
+    result_text = extractor(prompt, max_length=512, do_sample=False)[0]['generated_text']
 
     # Intentamos parsear JSON
     try:
         result_json = json.loads(result_text)
-    except:
+    except json.JSONDecodeError:
         result_json = {"error": "No se pudo parsear JSON", "raw_output": result_text}
 
     return result_json
