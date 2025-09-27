@@ -2,17 +2,12 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Instala dependencias del sistema
-RUN apt-get update && apt-get install -y build-essential curl && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
+# Copiamos el requirements.txt desde la carpeta app
+COPY app/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Descargar modelo spaCy español e inglés pequeño
-RUN python -m spacy download en_core_web_sm
-RUN python -m spacy download es_core_news_sm
-
-COPY . .
+# Copiamos todo el contenido de app
+COPY app/ .
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
