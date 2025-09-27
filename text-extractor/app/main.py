@@ -12,8 +12,10 @@ nlp_es = spacy.load("es_core_news_sm")
 class TextRequest(BaseModel):
     text: str
 
-# Detectar tipo de mensaje con palabras clave
-def detect_tipo(text):
+# ------------------------------
+# Detectar tipo de mensaje
+# ------------------------------
+def detect_tipo(text: str) -> str:
     lower = text.lower()
     if "reserva confirmada" in lower:
         return "Confirmación"
@@ -26,16 +28,25 @@ def detect_tipo(text):
     else:
         return "Desconocido"
 
-# Funciones de extracción
-def extract_confirmacion(text):
-    data = {}
+# ------------------------------
+# Funciones de extracción por tipo
+# ------------------------------
+
+def extract_confirmacion(text: str) -> dict:
+    data = {
+        "fecha_inicio": None,
+        "fecha_fin": None,
+        "ingresos": None,
+        "id_reserva": None,
+        "matricula_coche": None
+    }
     # Fechas
-    fechas = re.findall(r'\d{1,2}\.\s*\w+\s*\d{0,4}\s*a\s*las\s*\d{1,2}:\d{2}', text)
+    fechas = re.findall(r'\d{1,2}\.?\s*\w+\s*\d{0,4}.*?\d{1,2}:\d{2}', text)
     if len(fechas) >= 2:
         data["fecha_inicio"] = fechas[0]
         data["fecha_fin"] = fechas[1]
     # Ingresos
-    ingresos = re.search(r'Ingresos totales\s*([\d,.]+)', text)
+    ingresos = re.search(r'Ingresos totales\s*([\d.,]+)', text)
     if ingresos:
         data["ingresos"] = ingresos.group(1)
     # ID reserva
@@ -43,73 +54,94 @@ def extract_confirmacion(text):
     if id_reserva:
         data["id_reserva"] = id_reserva.group(1)
     # Matrícula
-    matricula = re.search(r'\b[A-Z0-9]{4,8}\b', text)
+    matricula = re.search(r'\b[A-Z]{1,2}\d{1,4}[A-Z]{0,3}\b', text)
     if matricula:
         data["matricula_coche"] = matricula.group(0)
     return data
 
-def extract_comienzo(text):
-    data = {}
+def extract_comienzo(text: str) -> dict:
+    data = {
+        "matricula_coche": None,
+        "km_entrega": None,
+        "combustible_entrega": None,
+        "arrendatario": {"nombre": None, "telefono": None, "email": None, "carnet_conducir": None}
+    }
     # Matrícula
-    matricula = re.search(r'\b[A-Z0-9]{4,8}\b', text)
+    matricula = re.search(r'\b[A-Z]{1,2}\d{1,4}[A-Z]{0,3}\b', text)
     if matricula:
         data["matricula_coche"] = matricula.group(0)
-    # km entrega
+    # KM entrega
     km = re.search(r'Kilometraje a la entrega\s*(\d+)', text)
     if km:
         data["km_entrega"] = km.group(1)
-    # combustible
+    # Combustible
     combustible = re.search(r'Nivel a la entrega\s*(\d+%)', text)
     if combustible:
         data["combustible_entrega"] = combustible.group(1)
     # Arrendatario
-    arrendatario = {}
     nombre_match = re.search(r'Arrendatario\s+Nombre\s+(.+?)\s+Teléfono', text, re.DOTALL)
     if nombre_match:
-        arrendatario["nombre"] = nombre_match.group(1).strip()
+        data["arrendatario"]["nombre"] = nombre_match.group(1).strip()
     telefono_match = re.search(r'Teléfono\s+(\d+)', text)
     if telefono_match:
-        arrendatario["telefono"] = telefono_match.group(1).strip()
+        data["arrendatario"]["telefono"] = telefono_match.group(1).strip()
     email_match = re.search(r'Email\s+(\S+)', text)
     if email_match:
-        arrendatario["email"] = email_match.group(1).strip()
+        data["arrendatario"]["email"] = email_match.group(1).strip()
     carnet_match = re.search(r'Número del carne de conducir\s+(\S+)', text)
     if carnet_match:
-        arrendatario["carnet_conducir"] = carnet_match.group(1).strip()
-    if arrendatario:
-        data["arrendatario"] = arrendatario
+        data["arrendatario"]["carnet_conducir"] = carnet_match.group(1).strip()
     return data
 
-def extract_devolucion(text):
-    data = {}
-    matricula = re.search(r'\b[A-Z0-9]{4,8}\b', text)
+def extract_devolucion(text: str) -> dict:
+    data = {
+        "matricula_coche": None,
+        "fecha_hora_entrega": None,
+        "km_recorridos": None,
+        "combustible_entrega": None,
+        "combustible_devolucion": None,
+        "coste_extra": False
+    }
+    # Matrícula
+    matricula = re.search(r'\b[A-Z]{1,2}\d{1,4}[A-Z]{0,3}\b', text)
     if matricula:
         data["matricula_coche"] = matricula.group(0)
-    fecha_entrega = re.search(r'Fecha y hora\s*(\d{1,2}\.\s*\w+\s*\d{0,4}\s*a\s*\d{1,2}:\d{2})', text)
+    # Fecha entrega
+    fecha_entrega = re.search(r'Fecha y hora\s*(\d{1,2}\.?\s*\w+\s*\d{0,4}.*?\d{1,2}:\d{2})', text)
     if fecha_entrega:
         data["fecha_hora_entrega"] = fecha_entrega.group(1)
+    # KM recorridos
     km = re.search(r'Kilómetros recorridos\s*(\d+)', text)
     if km:
         data["km_recorridos"] = km.group(1)
+    # Combustible entrega
     combustible_entrega = re.search(r'Nivel a la entrega\s*(\d+%)', text)
     if combustible_entrega:
         data["combustible_entrega"] = combustible_entrega.group(1)
+    # Combustible devolución
     combustible_dev = re.search(r'Nivel a la devolución\s*(\d+%)', text)
     if combustible_dev:
         data["combustible_devolucion"] = combustible_dev.group(1)
+    # Costes extra
     data["coste_extra"] = bool(re.search(r'Costes extra', text, re.IGNORECASE))
     return data
 
-def extract_cancelacion(text):
-    data = {}
+def extract_cancelacion(text: str) -> dict:
+    data = {
+        "id_reserva": None,
+        "matricula_coche": None
+    }
     id_reserva = re.search(r'ID de reserva\s*(\d+)', text)
     if id_reserva:
         data["id_reserva"] = id_reserva.group(1)
-    matricula = re.search(r'\b[A-Z0-9]{4,8}\b', text)
+    matricula = re.search(r'\b[A-Z]{1,2}\d{1,4}[A-Z]{0,3}\b', text)
     if matricula:
         data["matricula_coche"] = matricula.group(0)
     return data
 
+# ------------------------------
+# Endpoint
+# ------------------------------
 @app.post("/extract")
 def extract_info(request: TextRequest):
     text = request.text
