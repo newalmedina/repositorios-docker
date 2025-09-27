@@ -1,6 +1,6 @@
 services:
   text-extractor:
-    build: ./app
+    build: .
     container_name: text-extractor
     ports:
       - "8000:8000"
