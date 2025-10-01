@@ -18,7 +18,7 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
-      start_period: 30s
+      start_period: 90s
 networks:
   web:
     external: true  # Usamos la red externa 'web'
