@@ -1,13 +1,11 @@
-version: '3.8'
-
 services:
     android-emulator:
         image: budtmo/docker-android:emulator_11.0
         container_name: android_emulator
         privileged: true
         ports:
-            - '6080:6080' # Web VNC
-            - '5555:5555' # ADB
+            - '6080:6080'
+            - '5555:5555'
         environment:
             - DEVICE=Nexus 5
             - APPIUM=false
